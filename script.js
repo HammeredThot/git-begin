@@ -6,19 +6,31 @@ function saveNotes() {
     const notes = [];
 
     document.querySelectorAll("#notesList li").forEach(li => {
-        notes.push(li.firstChild.textContent.trim());
+        notes.push({
+            text: li.firstChild.textContent.trim(),
+            completed: li.classList.contains("completed")
+        });
     });
 
     localStorage.setItem("notes", JSON.stringify(notes));
 }
 
-function createNote(noteText) {
+function createNote(noteText, completed = false) {
     const li = document.createElement("li");
-
+    
+    if (completed) {
+        li.classList.add("completed");
+    }
+    li.addEventListener("click", function () {
+        li.classList.toggle("completed");
+        saveNotes();
+    });
+    
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
 
-    deleteButton.addEventListener("click", function () {
+    deleteButton.addEventListener("click", function (event) {
+        event.stopPropagation();
     	li.remove();
     	saveNotes();
     });
@@ -34,7 +46,7 @@ button.addEventListener("click", addNote);
 const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
 
 savedNotes.forEach(note => {
-    createNote(note);
+    createNote(note.text, note.completed);
 });
 
 function addNote() {
