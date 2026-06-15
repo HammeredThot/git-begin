@@ -32,6 +32,7 @@ function createNote(noteText, completed = false) {
     deleteButton.addEventListener("click", function (event) {
         event.stopPropagation();
     	li.remove();
+        updateNoteCount();
     	saveNotes();
     });
 
@@ -39,6 +40,7 @@ function createNote(noteText, completed = false) {
     li.appendChild(deleteButton);
 
     notesList.appendChild(li);
+    updateNoteCount();
 }
 
 button.addEventListener("click", addNote);
@@ -48,6 +50,7 @@ const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
 savedNotes.forEach(note => {
     createNote(note.text, note.completed);
 });
+updateNoteCount();
 
 function addNote() {
     const noteText = input.value.trim();
@@ -65,3 +68,10 @@ input.addEventListener("keydown", function (event) {
         addNote();
     }
 });
+
+function updateNoteCount() {
+    const count = document.querySelectorAll("#notesList li").length;
+
+    document.querySelector("#noteCount").textContent =
+        count === 1 ? "1 note" : `${count} notes`;
+}
