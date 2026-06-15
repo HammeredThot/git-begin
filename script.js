@@ -1,4 +1,4 @@
-const button = document.querySelector("button");
+const button = document.querySelector("#addButton");
 const input = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
 
@@ -29,7 +29,15 @@ function createNote(noteText) {
     notesList.appendChild(li);
 }
 
-button.addEventListener("click", function () {
+button.addEventListener("click", addNote);
+
+const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
+
+savedNotes.forEach(note => {
+    createNote(note);
+});
+
+function addNote() {
     const noteText = input.value.trim();
 
     if (!noteText) return;
@@ -38,10 +46,10 @@ button.addEventListener("click", function () {
     saveNotes();
 
     input.value = "";
-});
+}
 
-const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-
-savedNotes.forEach(note => {
-    createNote(note);
+input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        addNote();
+    }
 });
